@@ -1,0 +1,9 @@
+SetCPU perflock disabler driver
+
+This driver can disable the "perflock" driver on HTC Android phones
+running stock kernels. It works by copying shellcode that disables
+a function vital to perflock to a user specified-memory address.
+
+Usage: insmod perflock_disable.ko perflock_notifier_call_addr=X
+
+Where X is the address of perflock_notifier_call.
