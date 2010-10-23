@@ -31,12 +31,12 @@ static uint perflock_notifier_call_addr = 0x0;
 module_param(perflock_notifier_call_addr, uint, 0444);
 MODULE_PARM_DESC(perflock_notifier_call_addr, "Memory address of perflock_notifier_call");
 
-static char code[] =
-		"\x0D\xC0\xA0\xE1" //mov r12, sp
-		"\x00\xD8\x2D\xE9" //stmdb sp!, {r11, r12, lr, pc}
-		"\x04\xB0\x4C\xE2" //sub r11, r12, #4
-		"\x00\x00\xA0\xE3" //mov r0, #0
-		"\x00\xA8\x9D\xE8" //ldmia sp, {r11, sp, pc}
+static char code[] __initdata =
+		"\x0d\xc0\xa0\xe1" //mov r12, sp
+		"\x00\xd8\x2d\xe9" //stmdb sp!, {r11, r12, lr, pc}
+		"\x04\xb0\x4c\xe2" //sub r11, r12, #4
+		"\x00\x00\xa0\xe3" //mov r0, #0
+		"\x00\xa8\x9d\xe8" //ldmia sp, {r11, sp, pc}
 		;
 
 static int __init perflock_disable_init(void)
@@ -46,13 +46,7 @@ static int __init perflock_disable_init(void)
 	
 	if(perflock_notifier_call_addr != 0x0)
 	{	
-		unsigned char *func;
-		int i;
-		for(i = 0; i <= 19; i++)
-		{
-			func = (char *)perflock_notifier_call_addr+i;
-			*func = code[i];
-		}
+		memcpy((void*) perflock_notifier_call_addr, &code, sizeof(code));
 	}
 
 	return 0;
